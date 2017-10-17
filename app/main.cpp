@@ -17,11 +17,11 @@ int main()
     std::vector<double> speedLeftVec;
     std::vector<double> speedRightVec;
     for(int i=0;i<p.x.size();i++){
-    	double dx=p.x(i+1)-p.x(i);
-    	double dy=p.y(i+1)-p.y(i);
-    	double dT=p.theta(i+1)-p.theta(i);
-    	double dt=p.time(i+1)-p.time(i);
-    	double T=p.theta(i);
+    	double dx=p.x[i+1]-p.x[i];
+    	double dy=p.y[i+1]-p.y[i];
+    	double dT=p.theta[i+1]-p.theta[i];
+    	double dt=p.time[i+1]-p.time[i];
+    	double T=p.theta[i];
 
     	struct angularVelocity aV = robby.forwardKinematics(dx,dy,dT,T,dt);
     	cout << "Left Wheel Velocity " << aV.left << "  :  Right Wheel Velocity" << aV.right << "\n";
