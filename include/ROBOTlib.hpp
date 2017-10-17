@@ -29,6 +29,9 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <iomanip>
+
+
 using namespace std;
 
 /// Define the ROBOT class
@@ -89,16 +92,27 @@ struct angularVelocity ROBOT::forwardKinematics(double dx, double dy, double dT,
 
 /// simulate path
 void ROBOT::simulatePath() {
-	//std::vector<double> wheelSpeeds[0]=0;
+	//GNUplot gnu;
 }
 
 /// import path planner file
 struct path ROBOT::importPath() {
+
+	vector <vector<string>>data;
+	ifstream infile("plannedPathText.txt");
+
+    std::string str;
+
 	path p;
-	p.x[0] = 1;
-	p.y[0] = 1;
-	p.theta[0] = 1;
+	p.x[0] = -2.5;
+	p.y[0] = 0;
+	p.theta[0] = 0;
 	p.time[0] = 1;
+
+	p.x[1] = -2.3;
+	p.y[1] = -1.55;
+	p.theta[1] = .124;
+	p.time[1] = 1.55;
 
 	return p;
 }
