@@ -30,6 +30,7 @@ public:
 	double getKd();
 	double calculate(double setpoint, double pv);
 	void initialize(double _dt);
+	PID();
 private:
 	double kp;					///<kp
 	double kd;					///<ki
@@ -38,6 +39,11 @@ private:
 	double integral;                             ///< previous integral
 	double dt;
 };
+
+/// Class constructor
+PID::PID(void){
+	cout << "Object is being created" << endl;
+}
 
 // subfunction to set the private gain variables
 void PID::setGain(double _kp, double _ki, double _kd) {
@@ -92,6 +98,6 @@ double PID::calculate(double setpoint, double pv) {
 	// Save error to previous error
 	preError = error;
 
-	return output;
+	return (output);
 }
 

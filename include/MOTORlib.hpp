@@ -17,7 +17,9 @@
  */
 
 #pragma once
-
+#include <iostream>
+#include <fstream>
+using namespace std;
 /// Define the MOTOR class with variable kT, kV
 class MOTOR {
 public:
@@ -30,6 +32,7 @@ public:
 	void setKB(double _kB);
 	void setMaxV(double _maxV);
 	void setMaxI(double _maxI);
+	MOTOR();
 private:
 	double kT;					///<kT torque/current constant
 	double kB;					///<kB speed/voltage constant
@@ -38,6 +41,11 @@ private:
 	double maxI;					///<max current [Amperes]
 
 };
+
+/// Class constructor
+MOTOR::MOTOR(void){
+	cout << "Object is being created" << endl;
+}
 
 /// subfunction to set the torque/current constant
 void MOTOR::setKT(double _kT) {

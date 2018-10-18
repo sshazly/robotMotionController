@@ -28,18 +28,30 @@
 #include <fstream>
 #include <string>
 #include <vector>
+///#include <mgl2/mgl.h>
+#include <gnuplot_i.hpp>
 
+#include <stdio.h>
+#ifdef WINDOWS
+#include <direct.h>
+#define GetCurrentDir _getcwd
+#else
+#include <unistd.h>
+#define GetCurrentDir getcwd
+#endif
 
 using namespace std;
 
 /// Define the ROBOT class
 class ROBOT {
 public:
-	struct angularVelocity forwardKinematics(double dx, double dy, double dT,
+    ROBOT();
+	struct forwardKin forwardKinematics(double dx, double dy, double dT,
 			double x, double y, double T, double dt);
 	std::vector<double> rot2D(double theta, std::vector<double> vec);
-	void simulatePath();
+	void simulatePath(std::vector<double> time, std::vector<double> xleft, std::vector<double> yleft, std::vector<double> xright, std::vector<double> yright, std::vector<double> x, std::vector<double> y);
 	int sign(double a);
+	std::string getDirectory(void);
 	WHEEL leftWheel;
 	WHEEL rightWheel;
 	MOTOR leftMotor;
@@ -54,13 +66,21 @@ private:
 	int ID;					///<Specific robot ID
 };
 
+/// Class Constructor
+ROBOT::ROBOT(void) {
+	ROBOT::ID=1;
+	cout << "Object is being created" << endl;
+}
+
+
 /// Determine the left right Motor speeds to reach the next target point
-struct angularVelocity ROBOT::forwardKinematics(double dx, double dy, double dT,
+struct forwardKin ROBOT::forwardKinematics(double dx, double dy, double dT,
 		double x, double y, double T, double dt) {
 	/// Gather Robot Parameters (wheel radius, chassis width)
 	double w = chassis.getWidth();
 	double rL = leftWheel.getRadius();
 	double rR = rightWheel.getRadius();
+
 	// Position of wheels relative to frame
 	std::vector <double> pL={-w/2,0};
 	std::vector <double> pR={w/2,0};
@@ -83,6 +103,14 @@ struct angularVelocity ROBOT::forwardKinematics(double dx, double dy, double dT,
 	std::vector<double> dR_t1 = rot2D(T+dT, pR);
 	dR_t1[0]+=pos_t1[0]; // Add x component
 	dR_t1[1]+=pos_t1[1]; // Add y component
+	/// Populate wheelPosition Structure
+	struct forwardKin fK;
+	fK.wP.leftX=dL_t0[0];
+	fK.wP.leftY=dL_t0[1];
+	fK.wP.rightX=dR_t0[0];
+	fK.wP.rightY=dR_t0[1];
+
+
 	/// Find the difference between the wheels position
 	/// relative to the reference frame at t and t+dt
 	std::vector<double> dLv = {0,0};
@@ -106,20 +134,35 @@ struct angularVelocity ROBOT::forwardKinematics(double dx, double dy, double dT,
 	std::vector<double> relL=rot2D(-T,dL_t1_rel);
 	std::vector<double> relR=rot2D(-T,dR_t1_rel);
 
+	/// Declare variables for norm calculation
+	double power=2.0;
+	double dLv0=dLv[0];double dLv1=dLv[1];double dRv0=dRv[0];double dRv1=dRv[0];
+
 	/// Find the norm distance times the magnitude
-	double dL = sqrt(pow(dLv[0], 2.0) + pow(dLv[1], 2.0));
-	double dR = sqrt(pow(dRv[0], 2.0) + pow(dRv[1], 2.0));
+	double dL = sqrt(pow(dLv0, power) + pow(dLv1, power));
+	double dR = sqrt(pow(dRv0, power) + pow(dRv1, power));
+	double relL1=relL[1];
+	double relR1=relR[1];
+	fK.aV.left = dL /dt/rL * sign(relL1);
+	fK.aV.right = dR / dt/ rR * sign(relR1);
 
-	angularVelocity aV;
-		aV.left = dL /dt/rL * sign(relL[1]);
-		aV.right = dR / dt/ rR * sign(relR[1]);
-
-	return (aV);
+	return (fK);
 }
 
 /// simulate path
-void ROBOT::simulatePath() {
-	//GNUplot gnu;
+void ROBOT::simulatePath(std::vector<double> time, std::vector<double> xleft, std::vector<double> yleft, std::vector<double> xright, std::vector<double> yright, std::vector<double> x, std::vector<double> y) {
+	//MathGL plotting
+  Gnuplot gp;
+  gp.set_style("lines");
+  gp.set_xlabel("x");
+  gp.set_ylabel("y");
+  gp.plot_xy(x,y);
+  cout<<"Press Enter to quit...";
+  cin.get();
+
+  std::vector<double> x1;
+  x1[0]=time[0]+xleft[0]+yleft[0]+xright[0]+yright[0]+x[0]+y[0];
+
 }
 
 
@@ -139,3 +182,9 @@ int ROBOT::sign(double a) {
 	return (0);
 }
 
+std::string ROBOT::getDirectory(void) {
+  char buff[FILENAME_MAX];
+  GetCurrentDir(buff,FILENAME_MAX);
+  std::string current_working_dir(buff);
+  return (current_working_dir);
+}

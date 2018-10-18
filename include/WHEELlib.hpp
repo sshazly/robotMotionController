@@ -17,17 +17,22 @@
  */
 
 #pragma once
+#include <iostream>
+#include <fstream>
+using namespace std;
 
-/// Define the PID class with variable kp, kd, ki
+/// Define wheel with radius
 class WHEEL {
 public:
 	void setRadius(double _r);
 	double getRadius();
+	WHEEL();
 private:
 	double radius;
 };
 
-/// subfunction to set the private gain variables
+
+/// subfunction to set the private radius
 void WHEEL::setRadius(double _r) {
 	this->radius = _r;
 }
@@ -36,4 +41,7 @@ void WHEEL::setRadius(double _r) {
 double WHEEL::getRadius() {
 	return (radius);
 }
-
+/// Class constructor
+WHEEL::WHEEL(void){
+  cout << "Object is being created" << endl;
+}

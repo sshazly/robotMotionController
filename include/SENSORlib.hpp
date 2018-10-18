@@ -17,17 +17,26 @@
  */
 
 #pragma once
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 /// Define the PID class with variable kp, kd, ki
 class SENSOR {
 public:
 	void turnOn();
 	void turnOff();
+	SENSOR();
 
 private:
 	bool isOn;
 
 };
+
+/// Class constructor
+SENSOR::SENSOR(void){
+	cout << "Object is being created" << endl;
+}
 
 /// subfunction to set the private gain variables
 void SENSOR::turnOn() {

@@ -15,11 +15,23 @@
  *  @bug No known bugs.
  */
 #include <vector>
+#include <iostream>
+#include <fstream>
 using namespace std;
 
-struct angularVelocity {
-	double left;
-	double right;
+struct forwardKin {
+	struct angularVelocity {
+		double left;
+		double right;
+	};
+	angularVelocity aV;
+	struct wheelPosition {
+		double leftX;
+		double rightX;
+		double leftY;
+		double rightY;
+	};
+	wheelPosition wP;
 };
 
 struct path {

@@ -17,7 +17,9 @@
  */
 
 #pragma once
-
+#include <iostream>
+#include <fstream>
+using namespace std;
 /// Define the CHASSIS class
 class CHASSIS {
 public:
@@ -27,11 +29,17 @@ public:
 	double getHeight();
 	double getWidth();
 	double getLength();
+	CHASSIS();
 private:
 	double height;
 	double width;
 	double length;
 };
+
+/// Class Constructor
+CHASSIS::CHASSIS(void) {
+	cout << "Object is being created" << endl;
+}
 
 /// subfunction to set the private height variable
 void CHASSIS::setHeight(double H) {
